@@ -6,7 +6,7 @@ services:
     image: cockroachdb/cockroach
     ports:
       - "8080:8080"
-    command: start --insecure --join crdb-1,crdb-2
+    command: start --insecure --join crdb-1,crdb-2,crdb-3
     volumes:
       - crdb-volume-1:/cockroach/cockroach-data
     networks:
@@ -14,9 +14,16 @@ services:
 
   crdb-2:
     image: cockroachdb/cockroach
-    command: start --insecure --join crdb-1,crdb-2
+    command: start --insecure --join crdb-1,crdb-2,crdb-3
     volumes:
       - crdb-volume-2:/cockroach/cockroach-data
+    networks:
+      - network_cockroachdb
+  crdb-3:
+    image: cockroachdb/cockroach
+    command: start --insecure --join crdb-1,crdb-2,crdb-3
+    volumes:
+      - crdb-volume-3:/cockroach/cockroach-data
     networks:
       - network_cockroachdb
 
@@ -40,3 +47,4 @@ networks:
 volumes:
   crdb-volume-1:
   crdb-volume-2:  
+  crdb-volume-3: 
