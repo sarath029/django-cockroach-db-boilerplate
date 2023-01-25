@@ -1,0 +1,42 @@
+version: '3.5'
+
+services:
+
+  crdb-1:
+    image: cockroachdb/cockroach
+    ports:
+      - "8080:8080"
+    command: start --insecure --join crdb-1,crdb-2
+    volumes:
+      - crdb-volume-1:/cockroach/cockroach-data
+    networks:
+      - network_cockroachdb
+
+  crdb-2:
+    image: cockroachdb/cockroach
+    command: start --insecure --join crdb-1,crdb-2
+    volumes:
+      - crdb-volume-2:/cockroach/cockroach-data
+    networks:
+      - network_cockroachdb
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /start_backend
+    restart: on-failure
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    networks:
+      - network_cockroachdb
+
+networks:
+  network_cockroachdb:
+    driver: bridge
+
+volumes:
+  crdb-volume-1:
+  crdb-volume-2:  
